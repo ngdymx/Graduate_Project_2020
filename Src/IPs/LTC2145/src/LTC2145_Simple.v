@@ -31,13 +31,13 @@ module LTC2145_Simple#
 		parameter integer C_S_AXI_DATA_WIDTH	= 32,
 		// Width of S_AXI address bus
 		parameter integer C_S_AXI_ADDR_WIDTH	= 5,
-		parameter integer DATA_WIDTH = 28
+		parameter integer DATA_WIDTH = 20
 	)(
 	//LTC2145 ports
 	input ADCLK_P,
 	input ADCLK_N,
-	input [13:0] AD1,
-	input [13:0] AD2,
+	input [9:0] AD1,
+	input [9:0] AD2,
 
 	//Stream OUT ports
 	input ADC_AXIS_ACLK,
@@ -48,8 +48,12 @@ module LTC2145_Simple#
 	output ADC_AXIS_TLAST,
 	output [3:0] ADC_AXIS_TKEEP,
  	//Bare output
+ 	(* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 adc_clk CLK" *)
+     (* X_INTERFACE_PARAMETER = "FREQ_HZ 125000000" *)
  	output adc_clk,
- 	output reg [27:0] adc_data,
+ 	output reg [19:0] adc_data,
+      (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 dac_clk CLK" *)
+      (* X_INTERFACE_PARAMETER = "FREQ_HZ 125000000" *)
  	output dac_clk,
  	output locked,
  	
@@ -177,10 +181,10 @@ module LTC2145_Simple#
 	wire [15:0] MAX_counter = slv_reg1[15:0];
 	wire AXIS_RST = srst & (~ADC_AXIS_ARESETN);
 	
-	wire [15:0] CH1_DATA = {2'b00,AD1_l};
+	wire [15:0] CH1_DATA = {6'b00,AD1_l};
 	//wire [15:0] CH2_DATA = {2'b00,AD2};
-	wire [15:0] CH2_DATA = {2'b00,AD2_l};
-	reg [13:0] AD1_l,AD2_l;
+	wire [15:0] CH2_DATA = {6'b00,AD2_l};
+	wire [9:0] AD1_l,AD2_l;
 	always @ (posedge adc_clk) begin
 		case(mode)
 		CH1: begin adc_data <= {AD1_l,AD1_l}; end
@@ -198,24 +202,24 @@ module LTC2145_Simple#
 		CH2_LAST_DATA <= CH2_DATA;
 	end
 
-	always @(posedge clk) begin
-		AD1_l <= AD1;
-		AD2_l <= AD2;
-	end
-	// Auto_Delay_Receiver #(
-	// 	.DATA_WIDTH(28)
-	// ) inst_Auto_Delay_Receiver (
-	// 	.reset_n     (S_AXI_ARESETN),
-	// 	.clk_in_p    (ADCLK_P),
-	// 	.clk_in_n    (ADCLK_N),
-	// 	.data_in     ({AD2,AD1}),
-	// 	.data_out    ({AD2_l,AD1_l}),
-	// 	.data_out_en (),
-	// 	.clk_out     (adc_clk),
-	// 	.doubled_clk (dac_clk),
-	// 	.locked      (locked),
-	// 	.delay_val_out(delay_val_out)
-	// );
+//	always @(posedge adc_clk) begin
+//		AD1_l <= AD1;
+//		AD2_l <= AD2;
+//	end
+	 Auto_Delay_Receiver #(
+	 	.DATA_WIDTH(DATA_WIDTH)
+	 ) inst_Auto_Delay_Receiver (
+	 	.reset_n     (S_AXI_ARESETN),
+	 	.clk_in_p    (ADCLK_P),
+	 	.clk_in_n    (ADCLK_N),
+	 	.data_in     ({AD2,AD1}),
+	 	.data_out    ({AD2_l,AD1_l}),
+	 	.data_out_en (),
+	 	.clk_out     (adc_clk),
+	 	.doubled_clk (dac_clk),
+	 	.locked      (locked),
+	 	.delay_val_out(delay_val_out)
+	 );
 
 	wire [31:0] MODE_CH1_DATA = {CH1_DATA,CH1_LAST_DATA};
 	wire [31:0] MODE_CH2_DATA = {CH2_DATA,CH2_LAST_DATA};

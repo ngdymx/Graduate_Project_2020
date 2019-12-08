@@ -33,7 +33,7 @@ module AD9767#
 		parameter integer C_S_AXI_ADDR_WIDTH	= 5
 	)(
 	//AD9767 Ports
-	output [13:0] DA_DATA,
+	output [9:0] DA_DATA,
 	output DA_WRT,
 	output DA_CLK,
 	output DA_RESET,
@@ -41,7 +41,7 @@ module AD9767#
 
 	//
 	input adc_clk,
-	input [27:0]adc_data,
+	input [19:0]adc_data,
 	input dac_clk,
 	input locked,
 
@@ -213,20 +213,20 @@ module AD9767#
 	always @(posedge adc_clk) begin
 		case(mode)
 		CH1: begin
-			dac_data_b <= dout[13:0];
-			dac_data_a <= dout[13:0];
+			dac_data_b <= dout[9:0];
+			dac_data_a <= dout[9:0];
 		end
 		CH2:begin
-			dac_data_a <= dout[29:16];
-			dac_data_b <= dout[29:16];
+			dac_data_a <= dout[25:16];
+			dac_data_b <= dout[25:16];
 		end
 		DUAL:begin
-			dac_data_b <= adc_data[27:14];
-			dac_data_a <= adc_data[13:0];
+			dac_data_b <= adc_data[19:10];
+			dac_data_a <= adc_data[9:0];
 		end
 		SIMPLE:begin
-			dac_data_b <= dout[29:16];
-			dac_data_a <= dout[13:0];
+			dac_data_b <= dout[25:16];
+			dac_data_a <= dout[9:0];
 		end
 		endcase
 	end
@@ -278,7 +278,7 @@ module AD9767#
 	);
 	genvar j;
 	generate
-    for(j = 0; j < 14; j = j + 1)
+    for(j = 0; j < 10; j = j + 1)
     begin : DAC_DAT
       ODDR  #(
 		.DDR_CLK_EDGE("SAME_EDGE"), // "OPPOSITE_EDGE" or "SAME_EDGE" 
