@@ -1,0 +1,15 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Sun Dec  8 12:03:51 2019
+# Process ID: 14900
+# Current directory: /home/ella/Gru_Prj/Scripts
+# Command line: vivado -mode tcl
+# Log file: /home/ella/Gru_Prj/Scripts/vivado.log
+# Journal file: /home/ella/Gru_Prj/Scripts/vivado.jou
+#-----------------------------------------------------------
+pwd
+source create_prj.tcl 
+gui_start
+start_gui
