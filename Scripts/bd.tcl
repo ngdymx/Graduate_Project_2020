@@ -204,6 +204,9 @@ proc create_root_design { parentCell } {
   set DA_RESET [ create_bd_port -dir O -type rst DA_RESET ]
   set DA_SEL [ create_bd_port -dir O DA_SEL ]
   set DA_WRT [ create_bd_port -dir O DA_WRT ]
+  set adc_clk [ create_bd_port -dir O -type clk adc_clk ]
+  set adc_data [ create_bd_port -dir O -from 19 -to 0 adc_data ]
+  set dac_data [ create_bd_port -dir I -from 19 -to 0 dac_data ]
 
   # Create instance: AD9767_0, and set properties
   set AD9767_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:AD9767:1.0 AD9767_0 ]
@@ -403,10 +406,11 @@ proc create_root_design { parentCell } {
   connect_bd_net -net AD9767_0_DA_WRT [get_bd_ports DA_WRT] [get_bd_pins AD9767_0/DA_WRT]
   connect_bd_net -net ADCLK_N_0_1 [get_bd_ports ADCLK_N] [get_bd_pins LTC2145_Simple_0/ADCLK_N]
   connect_bd_net -net ADCLK_P_0_1 [get_bd_ports ADCLK_P] [get_bd_pins LTC2145_Simple_0/ADCLK_P]
-  connect_bd_net -net LTC2145_Simple_0_adc_clk [get_bd_pins AD9767_0/DAC_AXIS_ACLK] [get_bd_pins AD9767_0/S_AXI_ACLK] [get_bd_pins AD9767_0/adc_clk] [get_bd_pins LTC2145_Simple_0/ADC_AXIS_ACLK] [get_bd_pins LTC2145_Simple_0/S_AXI_ACLK] [get_bd_pins LTC2145_Simple_0/adc_clk] [get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] [get_bd_pins ps7_0_axi_periph/M00_ACLK] [get_bd_pins ps7_0_axi_periph/M01_ACLK] [get_bd_pins ps7_0_axi_periph/M02_ACLK] [get_bd_pins ps7_0_axi_periph/S00_ACLK] [get_bd_pins rst_LTC2145_Simple_0_125M/slowest_sync_clk]
-  connect_bd_net -net LTC2145_Simple_0_adc_data [get_bd_pins AD9767_0/adc_data] [get_bd_pins LTC2145_Simple_0/adc_data]
+  connect_bd_net -net LTC2145_Simple_0_adc_clk [get_bd_ports adc_clk] [get_bd_pins AD9767_0/DAC_AXIS_ACLK] [get_bd_pins AD9767_0/S_AXI_ACLK] [get_bd_pins AD9767_0/adc_clk] [get_bd_pins LTC2145_Simple_0/ADC_AXIS_ACLK] [get_bd_pins LTC2145_Simple_0/S_AXI_ACLK] [get_bd_pins LTC2145_Simple_0/adc_clk] [get_bd_pins axi_dma_0/m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins processing_system7_0/M_AXI_GP0_ACLK] [get_bd_pins ps7_0_axi_periph/ACLK] [get_bd_pins ps7_0_axi_periph/M00_ACLK] [get_bd_pins ps7_0_axi_periph/M01_ACLK] [get_bd_pins ps7_0_axi_periph/M02_ACLK] [get_bd_pins ps7_0_axi_periph/S00_ACLK] [get_bd_pins rst_LTC2145_Simple_0_125M/slowest_sync_clk]
+  connect_bd_net -net LTC2145_Simple_0_adc_data [get_bd_ports adc_data] [get_bd_pins LTC2145_Simple_0/adc_data]
   connect_bd_net -net LTC2145_Simple_0_dac_clk [get_bd_pins AD9767_0/dac_clk] [get_bd_pins LTC2145_Simple_0/dac_clk]
   connect_bd_net -net LTC2145_Simple_0_locked [get_bd_pins AD9767_0/locked] [get_bd_pins LTC2145_Simple_0/locked]
+  connect_bd_net -net adc_data_1_1 [get_bd_ports dac_data] [get_bd_pins AD9767_0/adc_data]
   connect_bd_net -net processing_system7_0_FCLK_RESET0_N [get_bd_pins processing_system7_0/FCLK_RESET0_N] [get_bd_pins rst_LTC2145_Simple_0_125M/ext_reset_in]
   connect_bd_net -net rst_LTC2145_Simple_0_125M_interconnect_aresetn [get_bd_pins ps7_0_axi_periph/ARESETN] [get_bd_pins rst_LTC2145_Simple_0_125M/interconnect_aresetn]
   connect_bd_net -net rst_LTC2145_Simple_0_125M_peripheral_aresetn [get_bd_pins AD9767_0/DAC_AXIS_ARESETN] [get_bd_pins AD9767_0/S_AXI_ARESETN] [get_bd_pins LTC2145_Simple_0/ADC_AXIS_ARESETN] [get_bd_pins LTC2145_Simple_0/S_AXI_ARESETN] [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins ps7_0_axi_periph/M00_ARESETN] [get_bd_pins ps7_0_axi_periph/M01_ARESETN] [get_bd_pins ps7_0_axi_periph/M02_ARESETN] [get_bd_pins ps7_0_axi_periph/S00_ARESETN] [get_bd_pins rst_LTC2145_Simple_0_125M/peripheral_aresetn]
